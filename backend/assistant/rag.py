@@ -5,7 +5,7 @@ from langchain_ollama import ChatOllama
 from langchain_huggingface import HuggingFaceEmbeddings
 
 from retrieve_data import create_vectorestore
-from generate import setup_rag_chain, generate_response_with_rag
+from generate import setup_rag_chain, generate_response_with_rag, generate_response_with_rag_traced
 
 class Rag:
     def __init__(self):
@@ -32,4 +32,4 @@ class Rag:
 
     def generate_answer(self, query):
         # response only generated with the rag and no tools
-        return generate_response_with_rag(self.chain, query)
+        return generate_response_with_rag_traced(self.chain, query)
