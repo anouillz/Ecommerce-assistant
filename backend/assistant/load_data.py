@@ -1,4 +1,5 @@
-from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
+import bs4
+from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader, WebBaseLoader
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -20,8 +21,19 @@ def load_chunk_documents(
         separators=['\n\n', '\n', '(?<=\. )', '(?<=\, )', ' ', '']
     )
 
-    # TODO: Load web links
-
+    # TODO: Load web 
+    """
+    for web_link in web_links:
+        loader = WebBaseLoader(
+            web_paths=[web_link],
+            bs_kwargs=dict(
+                parse_only=bs4.SoupStrainer(
+                    class_=("post-content", "post-title", "post-header")
+                )
+            ),
+        )
+    """ 
+    
     # load and process pdf files
     for file_path in file_paths:
         loader = PyPDFLoader(file_path)
