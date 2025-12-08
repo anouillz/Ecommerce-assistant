@@ -18,3 +18,4 @@ dataparser>=0.0.2,<0.0.3
 dateparser>=1.2.1,<2.0.0
 tavily-python>=0.7.1,<0.8.0
 matplotlib>=3.10.1,<4.0.0
+langgraph>=0.2.5,<0.3.0
