@@ -1,4 +1,6 @@
 from langchain_core.tools import tool
+from qr_retriever import extract_qr_from_page 
+from config import PDF_FOLDER_PATH
 from rag import rag
 
 @tool
@@ -20,6 +22,38 @@ def check_wine_details(wine_name: str) -> str:
     docs = rag.retriever.invoke(wine_name)
     return format_docs(docs)
 
+
+@tool
+def get_wine_video_or_qr(wine_name: str) -> str:
+    """
+    Utilise cet outil quand l'utilisateur demande une VIDÉO, un LIEN, ou un QR CODE sur un vin.
+    Utilise cet outil aussi quand l'utilisateur demande des détails sur un vin et qu'une vidéo pourrait être disponible.
+    Ne l'utilise pas pour des infos textuelles.
+    Input: Le nom du vin (ex: "Fendant", "Heida", "Syrah").
+    """
+    # page name
+    docs = rag.retriever.invoke(wine_name)
+    
+    if not docs:
+        return "Désolé, je n'ai pas trouvé ce vin dans le catalogue."
+    
+    # get best matching doc
+    best_doc = docs[0]
+    page_num = best_doc.metadata.get('page')
+    
+    if page_num is None:
+        return "Impossible de localiser la page de ce vin."
+
+    full_path = f"{PDF_FOLDER_PATH}/vins_2021.pdf"
+    
+    # get url from qr code
+    url = extract_qr_from_page(full_path, int(page_num))
+    
+    if url:
+        return f"J'ai trouvé un code QR sur la fiche du {wine_name} ! Voici le lien vidéo/info : {url}"
+    else:
+        return f"J'ai vérifié la fiche du {wine_name} (Page {page_num}), mais je n'ai pas trouvé de QR code dessus."
+
 # format documents with sources 
 def format_docs(docs):
     if not docs:
@@ -35,4 +69,4 @@ def format_docs(docs):
     return "\n\n".join(formatted)
 
 
-tools = [find_wine_pairing, check_wine_details]
+tools = [find_wine_pairing, check_wine_details, get_wine_video_or_qr]
