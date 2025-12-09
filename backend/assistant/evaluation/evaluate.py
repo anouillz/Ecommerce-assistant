@@ -15,7 +15,7 @@ from config import OLLAMA_MODEL, OLLAMA_ADDRESS
 # evaluation is made by another LLM that grades the answers
 
 # prompt for evaluation LLM
-eval_instructions = "Tu es un expert pour évaluer des réponses d'éleves à des question sur le vin. Tu dois répondre par CORRECT si la réponse de l'élève est correcte et par INCORRECT sinon. Si la réponse de l'élèe contient partiellement la bonne réponse, réponds par CORRECT. Ne donne aucune explication, réponds uniquement par CORRECT ou INCORRECT."
+eval_instructions = "Tu es un expert pour évaluer des réponses d'éleves à des question sur le vin. Tu dois répondre par VRAI si la réponse de l'élève est correcte et par FAUX sinon. Si la réponse de l'élève contient partiellement la bonne réponse, réponds par VRAI. Ne donne aucune explication, réponds uniquement par VRAI ou FAUX. Ce n'est pas grave si la réponse de l'élève n'est pas exactement identique à la bonne réponse, l'important est que le contenu soit correct."
 
 def correctness(inputs: dict, outputs: dict, reference_outputs: dict) -> bool:    
     llm = ChatOllama(
@@ -24,7 +24,7 @@ def correctness(inputs: dict, outputs: dict, reference_outputs: dict) -> bool:
         temperature=0.1, 
     )
 
-    user_content = f"""Tu évalues les réponses suivantes:
+    user_content = f"""Tu évalues la question suivante:
     {inputs['question']}
     
     Voici la bonne réponse:
@@ -33,7 +33,7 @@ def correctness(inputs: dict, outputs: dict, reference_outputs: dict) -> bool:
     Tu évalues la réponse prédite suivante:
     {outputs.get('response', 'Pas de réponse fournie')}
     
-    Réponds EXACTEMENT par 'CORRECT' ou 'INCORRECT':
+    Réponds EXACTEMENT par 'VRAI' ou 'FAUX':
     Grade:"""
 
     messages = [
@@ -44,6 +44,6 @@ def correctness(inputs: dict, outputs: dict, reference_outputs: dict) -> bool:
     ai_message = llm.invoke(messages)
 
     grade = ai_message.content.strip().upper()
-
-    return "CORRECT" in grade
+    print(" - Grade obtenue:", grade)
+    return "VRAI" in grade
 
