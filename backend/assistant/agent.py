@@ -41,8 +41,11 @@ def chatbot_node(state: AgentState):
         
         if last_human_msg:
             reminder_text = f"""
-            STOP ! Ne cherche plus. J'ai les infos. Pas besoin de t'excuser. 
+            STOP ! Ne cherche plus. Tu as les infos. 
+            Pas besoin de t'excuser. 
+            Pas besoin de dire que tu utilises l'outil.
             Réponds UNIQUEMENT à ma question : "{last_human_msg}".
+            Réponds dans la langue de cette question: "{last_human_msg}".
             Ignore les autres vins du texte s'ils ne correspondent pas.
             """
             full_context.append(HumanMessage(content=reminder_text))
