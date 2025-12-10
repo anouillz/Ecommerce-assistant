@@ -6,7 +6,7 @@ from typing import List, Dict
 from rich.console import Console
 from pathlib import Path 
 
-from load_data import load_chunk_documents 
+from data_handling.load_data import load_chunk_documents 
 
 console = Console()
 
@@ -28,12 +28,5 @@ def create_vectorestore(embedding_model, vector_store_path, pdf_folder_path, web
 
     return vectorstore
 
-
-def retrieve_relevant_docs(vectorstore: FAISS, query: str, top_k: int = K_RETRIEVAL) -> List[Dict]:
-    """
-    Embed query and retrieve top-k docs with sources.
-    """
-    retriever = vectorstore.as_retriever(search_kwargs={"k": top_k})
-    return retriever.get_relevant_documents(query)
 
 

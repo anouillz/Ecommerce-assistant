@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from qr_retriever import extract_qr_from_page 
+from data_handling.qr_retriever import extract_qr_from_page 
 from config import PDF_FOLDER_PATH
 from rag import rag
 
