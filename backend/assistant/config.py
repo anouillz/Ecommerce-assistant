@@ -11,7 +11,7 @@ PDF_FOLDER_PATH = os.path.abspath("data/pdf")
 
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
-K_RETRIEVAL = 2
+K_RETRIEVAL = 3
 
 """
 PROMPT_TEMPLATE =
@@ -47,7 +47,8 @@ RÈGLES CRITIQUES :
 
 - N'invente JAMAIS d'informations. Si tu n'as pas la réponse, dis-le poliment.
 - Ne donne pas des informations qui ne se trouvent pas dans le contexte fourni par les outils.
-- Ne répond pas à des questions hors sujet
+- Ne répond pas à des questions hors sujet.
+- Réponds uniquement à la question posée, ne rajoute pas d'informations supplémentaires.
 - Réponds TOUJOURS dans la langue de l'utilisateur (français ou anglais).
 - Tes réponses doivent être concises et pertinentes. Fais que des phrases courtes, c'est une conversation.
 - Cite toujours la source indiquée dans le contexte (ex: [Source: Carte des Vins | Page: 4]). Si la source est un pdf, pas besoin de mettre .pdf
