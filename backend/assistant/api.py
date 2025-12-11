@@ -1,7 +1,10 @@
 import uuid
 import uvicorn
+import whisper
+import shutil
+import os
 from agent import agent
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.messages import HumanMessage
@@ -19,9 +22,35 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+audio_model = whisper.load_model("small")
+
 class ChatRequest(BaseModel):
     message: str
     thread_id: str = None
+
+@app.post("/transcribe")
+async def transcribe_audio(file: UploadFile = File(...)):
+    # save file as a temporary file 
+    temp_filename = f"temp_{uuid.uuid4()}.webm"
+    
+    try:
+        with open(temp_filename, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # using the model to transcribe
+        result = audio_model.transcribe(temp_filename, fp16=False)
+        text = result["text"].strip()
+        
+        return {"text": text}
+        
+    except Exception as e:
+        return {"error": str(e)}
+        
+    finally:
+        # Nettoyage : on supprime le fichier temp
+        if os.path.exists(temp_filename):
+            os.remove(temp_filename)
+
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):

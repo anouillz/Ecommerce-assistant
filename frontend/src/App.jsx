@@ -12,6 +12,12 @@ function App() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
+  // for audio recording
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+
+  // thread ids for chat management
   const threadIdRef = useRef(crypto.randomUUID());
   const messagesEndRef = useRef(null);
 
@@ -23,6 +29,72 @@ function App() {
     scrollToBottom();
   }, [messages]);
 
+  // handle audio transcription
+  const handleVoiceInput = async () => {
+    // if already recording, we stop
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+
+    // if not already recording, we start
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        // create audio blob from chunks
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        
+        // display on input that it is transcribing
+        setInput("🎧 Transcription en cours...");
+        setIsLoading(true); // blocking input so user cannot write at the same time
+
+        // send blob to backend for transcription
+        const formData = new FormData();
+        formData.append("file", audioBlob, "voice.webm");
+
+        try {
+          const response = await fetch('http://localhost:8000/transcribe', {
+            method: 'POST',
+            body: formData,
+          });
+          
+          const data = await response.json();
+          if (data.text) {
+            setInput(data.text); // get transcribed text into input
+          } else {
+            console.error("Erreur transcription:", data.error);
+            setInput(""); 
+          }
+        } catch (err) {
+          console.error(err);
+          setInput("");
+        } finally {
+          setIsLoading(false);
+          // stop all media tracks
+          stream.getTracks().forEach(track => track.stop());
+        }
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+
+    } catch (err) {
+      alert("Impossible d'accéder au micro : " + err.message);
+    }
+  };
+
+  // chat
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -133,15 +205,25 @@ function App() {
         </div>
 
         <form className="input-area" onSubmit={handleSubmit}>
-          <button type="button" className="icon-btn">🎙️</button>
+          
+          {/* microphone */}
+          <button 
+            type="button" 
+            className={`icon-btn ${isRecording ? 'recording' : ''}`}
+            onClick={handleVoiceInput}
+            title="Maintenir pour parler"
+          >
+            {isRecording ? '⏹️' : '🎙️'}
+          </button>
+
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Posez votre question..."
-            disabled={isLoading}
+            placeholder={isRecording ? "Écoute en cours..." : "Posez votre question..."}
+            disabled={isLoading || isRecording}
           />
-          <button type="submit" className="send-btn" disabled={isLoading || !input.trim()}>
+          <button type="submit" className="send-btn" disabled={isLoading || !input.trim() || isRecording}>
             ➤
           </button>
         </form>

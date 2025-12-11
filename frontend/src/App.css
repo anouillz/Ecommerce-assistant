@@ -217,3 +217,17 @@ body {
     transform: scale(1); 
   }
 }
+
+/* animated recording button */
+.icon-btn.recording {
+  color: red;
+  animation: pulse 1.5s infinite;
+  background-color: rgba(255, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
