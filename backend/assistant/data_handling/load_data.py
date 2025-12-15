@@ -51,7 +51,7 @@ def load_chunk_documents(
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
-        separators=['\n\n', '\n', '(?<=\. )', '(?<=\, )', ' ', '']
+        separators=['\n\n', '\n', '(?<=\\. )', '(?<=\\, )', ' ', '']
     )
 
     web_loader = RecursiveUrlLoader(
@@ -70,8 +70,8 @@ def load_chunk_documents(
             print(f"liens valides: {source_url}")
             valid_docs.append(doc)
     print(f"Loaded {len(valid_docs)} documents")
-    # web documents could be splitted in chunks such as pdf documents but to keep all information about one wine together and avoid hallucinations, I kept it full
-    documents.extend(valid_docs)
+    # split web docs too to help agent retrieve informatino
+    documents.extend(text_splitter.split_documents(valid_docs))
     
     # load and process pdf files
     for file_path in file_paths:
