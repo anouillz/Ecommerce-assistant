@@ -1,5 +1,5 @@
 from langchain_core.tools import tool
-from data_handling.qr_retriever import extract_qr_from_page 
+from data_handling.qr_retriever import extract_qr_from_page
 from config import PDF_FOLDER_PATH
 from rag import rag
 
@@ -64,8 +64,12 @@ def format_docs(docs):
         source = doc.metadata.get('source', 'Inconnu').split('/')[-1]
         page = doc.metadata.get('page', '?')
         content = doc.page_content.replace('\n', ' ').strip()
-        formatted.append(f"[Source: {source} | Page: {page}] Contenu: {content}")
-        
+        language = doc.metadata.get('language')
+        if source.lower().endswith("pdf"):
+            formatted.append(f"[Source: {source} | Page: {page}] | langue: {language} Contenu: {content}")
+        else:
+            formatted.append(f"[Source: Voir la source du produit]({doc.metadata.get('source')}) | langue: {language} Contenu: {content}")
+
     return "\n\n".join(formatted)
 
 
