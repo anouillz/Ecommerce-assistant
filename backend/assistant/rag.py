@@ -1,7 +1,7 @@
 from data_handling.retrieve_data import create_vectorestore
 
 from langchain_huggingface import HuggingFaceEmbeddings
-from config import EMBEDDING_MODEL_NAME, PDF_FOLDER_PATH, VECTOR_STORE_PATH, K_RETRIEVAL as K
+from config import EMBEDDING_MODEL_NAME, PDF_FOLDER_PATH, VECTOR_STORE_PATH, URL, BASE_URL, K_RETRIEVAL as K
 
 class Rag:
     def __init__(self):
@@ -11,7 +11,7 @@ class Rag:
             encode_kwargs={"normalize_embeddings": True},
         )
 
-        self.vectorstore = create_vectorestore(self.embedding_model, VECTOR_STORE_PATH, PDF_FOLDER_PATH)
+        self.vectorstore = create_vectorestore(self.embedding_model, VECTOR_STORE_PATH, PDF_FOLDER_PATH, URL, BASE_URL)
         self.retriever = self.vectorstore.as_retriever(
             search_type="mmr",
             search_kwargs={"k": K}
