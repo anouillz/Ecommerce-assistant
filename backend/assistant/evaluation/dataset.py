@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv 
 from langsmith import Client
 
@@ -11,7 +10,7 @@ from langsmith import Client
 client = Client()
 
 # register dataset
-dataset_name = "wine_evaluation_moredata"
+dataset_name = "wine_evaluation_v4"
 dataset = client.create_dataset(dataset_name)
 
 client.create_examples(
@@ -46,8 +45,8 @@ client.create_examples(
             "outputs": {"answer": "Le terroir du Cornalin se situe à Sion, notamment au Domaine Les Balettes [Source: Page 81]."},
         },
         {
-            "inputs": {"question": "Quelle est la particularité de la récolte du Saint-Eloi Johannisberg ?"},
-            "outputs": {"answer": "Le Sylvaner utilisé pour le Saint-Eloi est vendangé tardivement, le 1er décembre [Source: Page 69]."},
+            "inputs": {"question": "Quelle est le prix du Saint-Eloi, Johannisberg doux AOC Valais ?"},
+            "outputs": {"answer": "Son prix est de 19,50 CHF"},
         },
         {
             "inputs": {"question": "Quels arômes peut-on sentir dans le Viognier AOC Valais ?"},
@@ -72,6 +71,26 @@ client.create_examples(
         {
             "inputs": {"question": "Est-ce que le Sans Culotte Fendant est un vin de garde ?"},
             "outputs": {"answer": "Non, le Sans Culotte Fendant s'apprécie de préférence jeune [Source: Page 85]."},
+        },
+        {
+            "inputs": {"question": "Donne moi des vins pour accompagner une raclette."},
+            "outputs": {"answer": "Soleil du Valais, Heida, Sans Culotte"},
+        },
+        {
+            "inputs": {"question": "Peux tu me donner la capitale de la Suisse ?"},
+            "outputs": {"answer": "Désolé, je ne peux que vous aider pour des questions de vin. Je suis incapable de répondre à votre question."},
+        },
+        {
+            "inputs": {"question": "Quelle est la teneur en alcool du Coquet, Gamay ?"},
+            "outputs": {"answer": "13%"},
+        },
+        {
+            "inputs": {"question": "Avec quels mets accompagner le Château Conthey, Sauvignon, Chardonnay AOC Valais ?"},
+            "outputs": {"answer": "Apéritif, entrées fines en tous genres, terrines de poissons, melon et jambon, saumon fumé, poissons grillés, cuisine chinoise"},
+        },
+        {
+            "inputs": {"question": "Quelle est la quantité minimale pour pouvoir commander le Cornalin Nobles Cépages, AOC Valais?"},
+            "outputs": {"answer": "La quantité minimale est de 6 bouteilles."},
         }
     ]
 )
