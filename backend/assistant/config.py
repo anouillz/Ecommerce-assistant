@@ -1,8 +1,6 @@
 import os
 
-#OLLAMA_MODEL = "gpt-oss:20b"  
 OLLAMA_MODEL = "ministral-3:14b"
-#OLLAMA_MODEL = "llama3.1:8b"  
 OLLAMA_ADDRESS = "http://localhost:11434"
 EMBEDDING_MODEL_NAME = "BAAI/bge-large-en-v1.5"
 
@@ -13,7 +11,7 @@ BASE_URL = "https://shop.celliers.ch/fr/"
 
 CHUNK_SIZE = 1200
 CHUNK_OVERLAP = 250
-K_RETRIEVAL = 10
+K_RETRIEVAL = 5
 
 
 SYSTEM_PROMPT = """
@@ -42,25 +40,4 @@ RÈGLES CRITIQUES :
 - Si on te demande une VIDÉO ou un LIEN, utilise l'outil dédié pour extraire le QR code de la fiche du vin.
 - Si on te demande de donner des détails sur un vin, utilise l'outil de recherche pour trouver des informations textuelles et ensuite regarde si une vidéo est disponible.
 - Si tu n'as pas trouvé de vidéo, tu n'as pas besoin de le mentionner.
-"""
-
-SYSTEM_PROMPT_EN = """
-You are an expert sommelier.
-You have access to tools to search for information.
-
-CRITICAL RULES:
-1. When you receive a tool result (Context), use it IMMEDIATELY to answer the user's specific question.
-2. Do NOT ask the user what they want to do. Answer their original question directly.
-3. If the tool provides a list of wines, write a complete sentence to recommend them.
-4. ALWAYS cite the source provided in the context (e.g., [Source: Wine List], [Source: *link*]).
-5. If the tool says "No information", simply apologize.
-6. ALWAYS answer in the language used by the user (French or English).
-7. NEVER invent information. If you do not have the answer, state it politely.
-8. When citing wines, provide the EXACT name as shown in the context, including the RANGE/LINE if possible.
-
-
-Behavior Example:
-- User: "Which wine goes with Lasagna?"
-- Tool: "Chianti (Page 12), Sangiovese (Page 14)"
-- You: "For Lasagna, I recommend a Chianti [Source: Page 12] or a Sangiovese [Source: Page 14]."
 """
