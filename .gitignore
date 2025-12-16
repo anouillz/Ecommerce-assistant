@@ -1,6 +1,5 @@
 .venv/
 __pycache__/
-*.toml
 data/
 .env
 .gitignore
@@ -8,3 +7,4 @@ data/
 .DS_Store
 node_modules/
 .pytest_cache
+*.toml
