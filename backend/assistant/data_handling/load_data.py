@@ -67,7 +67,7 @@ def load_chunk_documents(
     for doc in web_docs:
         source_url = doc.metadata["source"]
         if ".html" in source_url:
-            print(f"liens valides: {source_url}")
+            #print(f"liens valides: {source_url}")
             valid_docs.append(doc)
     print(f"Loaded {len(valid_docs)} documents")
     # split web docs too to help agent retrieve informatino

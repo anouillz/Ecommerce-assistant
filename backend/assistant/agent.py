@@ -100,6 +100,8 @@ memory = MemorySaver()
 agent = workflow.compile(checkpointer=memory)
 
 # generate agent graph image
+"""
 img = agent.get_graph(xray=True).draw_mermaid_png()
 with open("agent.png", "wb") as f:
     f.write(img)
+"""
